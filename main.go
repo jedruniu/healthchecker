@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"time"
@@ -9,34 +10,35 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
 
-	fileCheck := h.NewHealthCheck(
-		"file based one",
-		10,
-		3,
-		1*time.Second,
-		h.NewFileBased("testFile.txt"),
-	)
+	fileCheck := h.HealthCheck{
+		Name: "file based one",
+		FailedThreshold: 10,
+		PassedThreshold: 3,
+		Interval: 1*time.Second,
+		S: h.NewFileBased("testFile.txt"),
+	}
 
-	apiCheck := h.NewHealthCheck(
-		"google endpoint",
-		10,
-		3,
-		10*time.Second,
-		h.NewApiCallBased("http://google.com"),
-	)
+	apiCheck := h.HealthCheck{
+		Name: "google endpoint",
+		FailedThreshold: 10,
+		PassedThreshold: 3,
+		Interval: 2*time.Second,
+		S: h.NewApiCallBased("http://google.com"),
+	}
 
-	redisCheck := h.NewHealthCheck(
-		"get some key from redis",
-		1,
-		1,
-		30*time.Second,
-		h.NewRedisBased("some_key"),
-	)
+	redisCheck := h.HealthCheck{
+		Name: "get some key from redis",
+		FailedThreshold: 1,
+		PassedThreshold: 1,
+		Interval: 3*time.Second,
+		S: h.NewRedisBased("some_key"),
+	}
 
-	h.Run(fileCheck)
-	h.Run(apiCheck)
-	h.Run(redisCheck)
+	fileCheck.Run(ctx)
+	apiCheck.Run(ctx)
+	redisCheck.Run(ctx)
 
 	// TODO implement server to fetch data
 	// TODO implement bash script checks
