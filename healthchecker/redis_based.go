@@ -2,7 +2,6 @@ package healthchecker
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/go-redis/redis"
 )
@@ -10,19 +9,18 @@ import (
 type redisBasedHealthCheck struct {
 	key         string
 	redisClient *redis.Client
-	*CommonHealthCheck
 }
 
-func NewRedisBasedHealthCheck(name, key string, interval time.Duration) HealthChecker {
+func NewRedisBased(key string) SingleChecker {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
 	})
-	return &redisBasedHealthCheck{key, client, &CommonHealthCheck{name, interval}}
+	return &redisBasedHealthCheck{key, client}
 }
 
-func (hc *redisBasedHealthCheck) IsHealthy() bool {
+func (hc *redisBasedHealthCheck) SingleCheck() bool {
 	val, err := hc.redisClient.Exists(hc.key).Result()
 	if err != nil {
 		fmt.Printf("could not connect to redis: err %v\n", err)

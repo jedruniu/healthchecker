@@ -3,19 +3,17 @@ package healthchecker
 import (
 	"fmt"
 	"net/http"
-	"time"
 )
 
 type apiCallBasedHealthCheck struct {
 	endpoint string
-	*CommonHealthCheck
 }
 
-func NewApiCallBasedHealthCheck(name, endpoint string, interval time.Duration) HealthChecker {
-	return &apiCallBasedHealthCheck{endpoint, &CommonHealthCheck{name, interval}}
+func NewApiCallBased(endpoint string) SingleChecker {
+	return &apiCallBasedHealthCheck{endpoint}
 }
 
-func (hc *apiCallBasedHealthCheck) IsHealthy() bool {
+func (hc *apiCallBasedHealthCheck) SingleCheck() bool {
 	resp, err := http.Get(hc.endpoint)
 	if err != nil {
 		fmt.Printf("could not hit endpoint %s, err %v\n", hc.endpoint, err)
