@@ -1,6 +1,8 @@
 package healthchecker
 
-type healthchecker interface {
-	isHealthy() bool
-	getInterval() int
+import "time"
+
+type Healthchecker interface {
+	IsHealthy() bool
+	GetInterval() time.Duration
 }

@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"time"
+
+	"github.com/jedruniu/healthchecker/healthchecker"
 )
 
 func main() {
-	healthcheck := fileBasedHealthCheck{filename: "testFile.txt", interval: 5 * time.Second}
+	hc := healthchecker.NewFileBasedHealthChecker("testFile.txt", 5*time.Second)
 
 	for {
-		fmt.Println(healthcheck.isHealthy())
-		time.Sleep(healthcheck.getInterval())
+		fmt.Println(hc.isHealthy())
+		time.Sleep(hc.getInterval())
 	}
 }
