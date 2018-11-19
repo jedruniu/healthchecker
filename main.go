@@ -1,19 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/jedruniu/healthchecker/healthchecker"
 )
 
 func main() {
-	hc := healthchecker.NewFileBasedHealthChecker("testFile.txt", 5*time.Second)
+	hc := healthchecker.NewFileBasedHealthChecker("testFile.txt", 1*time.Second)
 	apiHc := healthchecker.NewApiCallBasedHealthChecker("http://google.com", 5*time.Second)
 
-	for {
-		fmt.Println("file based: ", hc.IsHealthy())
-		fmt.Println("endpoint based: ", apiHc.IsHealthy())
-		time.Sleep(hc.GetInterval())
-	}
+	healthchecker.Schedule(hc)
+	healthchecker.Schedule(apiHc)
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
+
 }
