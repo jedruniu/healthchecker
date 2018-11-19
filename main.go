@@ -9,9 +9,11 @@ import (
 
 func main() {
 	hc := healthchecker.NewFileBasedHealthChecker("testFile.txt", 5*time.Second)
+	apiHc := healthchecker.NewApiCallBasedHealthChecker("http://google.com", 5*time.Second)
 
 	for {
-		fmt.Println(hc.isHealthy())
-		time.Sleep(hc.getInterval())
+		fmt.Println("file based: ", hc.IsHealthy())
+		fmt.Println("endpoint based: ", apiHc.IsHealthy())
+		time.Sleep(hc.GetInterval())
 	}
 }

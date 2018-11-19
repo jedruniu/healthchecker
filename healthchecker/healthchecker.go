@@ -2,7 +2,7 @@ package healthchecker
 
 import "time"
 
-type Healthchecker interface {
+type HealthChecker interface {
 	IsHealthy() bool
 	GetInterval() time.Duration
 }
