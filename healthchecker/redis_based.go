@@ -13,13 +13,13 @@ type redisBasedHealthCheck struct {
 	*CommonHealthCheck
 }
 
-func NewRedisBasedHealthCheck(key string, interval time.Duration) HealthChecker {
+func NewRedisBasedHealthCheck(name, key string, interval time.Duration) HealthChecker {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
 	})
-	return &redisBasedHealthCheck{key, client, &CommonHealthCheck{interval}}
+	return &redisBasedHealthCheck{key, client, &CommonHealthCheck{name, interval}}
 }
 
 func (hc *redisBasedHealthCheck) IsHealthy() bool {

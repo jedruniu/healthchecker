@@ -9,9 +9,9 @@ import (
 )
 
 func main() {
-	hc := healthchecker.NewFileBasedHealthCheck("testFile.txt", 1*time.Second)
-	apiHc := healthchecker.NewApiCallBasedHealthCheck("http://google.com", 5*time.Second)
-	redisHc := healthchecker.NewRedisBasedHealthCheck("some_key", 2*time.Second)
+	hc := healthchecker.NewFileBasedHealthCheck("file based one", "testFile.txt", 1*time.Second)
+	apiHc := healthchecker.NewApiCallBasedHealthCheck("hit google", "http://google.com", 5*time.Second)
+	redisHc := healthchecker.NewRedisBasedHealthCheck("get from redis", "some_key", 2*time.Second)
 
 	healthchecker.Run(hc)
 	healthchecker.Run(apiHc)

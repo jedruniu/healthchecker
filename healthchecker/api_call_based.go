@@ -11,8 +11,8 @@ type apiCallBasedHealthCheck struct {
 	*CommonHealthCheck
 }
 
-func NewApiCallBasedHealthCheck(endpoint string, interval time.Duration) HealthChecker {
-	return &apiCallBasedHealthCheck{endpoint, &CommonHealthCheck{interval}}
+func NewApiCallBasedHealthCheck(name, endpoint string, interval time.Duration) HealthChecker {
+	return &apiCallBasedHealthCheck{endpoint, &CommonHealthCheck{name, interval}}
 }
 
 func (hc *apiCallBasedHealthCheck) IsHealthy() bool {

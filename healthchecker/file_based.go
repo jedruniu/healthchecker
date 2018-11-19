@@ -11,8 +11,8 @@ type fileBasedHealthCheck struct {
 	*CommonHealthCheck
 }
 
-func NewFileBasedHealthCheck(filename string, interval time.Duration) HealthChecker {
-	return &fileBasedHealthCheck{filename, &CommonHealthCheck{interval}}
+func NewFileBasedHealthCheck(name, filename string, interval time.Duration) HealthChecker {
+	return &fileBasedHealthCheck{filename, &CommonHealthCheck{name, interval}}
 }
 
 // returns true if file was touched in less than minute, false otherwise

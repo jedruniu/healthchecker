@@ -10,7 +10,7 @@ func Run(hc HealthChecker) {
 		for {
 			select {
 			case <-time.After(hc.GetInterval()):
-				fmt.Println(hc.IsHealthy())
+				fmt.Println(hc, hc.IsHealthy())
 			}
 		}
 	}()
