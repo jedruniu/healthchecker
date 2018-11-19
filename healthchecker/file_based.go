@@ -8,11 +8,11 @@ import (
 
 type fileBasedHealthCheck struct {
 	filename string
-	interval time.Duration
+	*CommonHealthCheck
 }
 
-func NewFileBasedHealthChecker(filename string, interval time.Duration) HealthChecker {
-	return &fileBasedHealthCheck{filename, interval}
+func NewFileBasedHealthCheck(filename string, interval time.Duration) HealthChecker {
+	return &fileBasedHealthCheck{filename, &CommonHealthCheck{interval}}
 }
 
 // returns true if file was touched in less than minute, false otherwise
@@ -23,8 +23,4 @@ func (hc *fileBasedHealthCheck) IsHealthy() bool {
 		return false
 	}
 	return (time.Now().Sub(fileInfo.ModTime()) < 1*time.Minute)
-}
-
-func (hc *fileBasedHealthCheck) GetInterval() time.Duration {
-	return hc.interval
 }

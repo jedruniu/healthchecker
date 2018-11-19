@@ -8,18 +8,18 @@ import (
 )
 
 type redisBasedHealthCheck struct {
-	interval    time.Duration
 	key         string
 	redisClient *redis.Client
+	*CommonHealthCheck
 }
 
-func NewRedisBasedHealthChecker(key string, interval time.Duration) HealthChecker {
+func NewRedisBasedHealthCheck(key string, interval time.Duration) HealthChecker {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0,
 	})
-	return &redisBasedHealthCheck{interval, key, client}
+	return &redisBasedHealthCheck{key, client, &CommonHealthCheck{interval}}
 }
 
 func (hc *redisBasedHealthCheck) IsHealthy() bool {
@@ -29,8 +29,4 @@ func (hc *redisBasedHealthCheck) IsHealthy() bool {
 		return false
 	}
 	return val == 1
-}
-
-func (hc *redisBasedHealthCheck) GetInterval() time.Duration {
-	return hc.interval
 }
