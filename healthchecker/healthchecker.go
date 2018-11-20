@@ -35,10 +35,10 @@ func (hc *HealthCheck) Run(ctx context.Context) {
 			select {
 			case <-time.After(hc.Interval):
 				hc.RunSingleCheck()
-				fmt.Printf("Name: %q\tHealth: %v\n", hc.Name, hc.IsHealthy())
+				fmt.Printf("Name: %q\t Health: %v\n", hc.Name, hc.IsHealthy())
 			case <-ctx.Done():
-				fmt.Printf("Name: %q\tContext terminated", hc.Name)
-				// return
+				fmt.Printf("Name: %q\t Context terminated\n", hc.Name)
+				return
 			}
 		}
 	}()
