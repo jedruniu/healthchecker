@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"time"
@@ -49,9 +52,29 @@ func main() {
 	redisCheck.Run(ctx)
 	shellCheck.Run(ctx)
 
-	// TODO implement server to fetch data
+	s := server{healths: []HealthReporter{&fileCheck, &apiCheck, &redisCheck, &shellCheck}}
+
+	http.HandleFunc("/health", s.healthEndpoint)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c
+}
+
+type HealthReporter interface {
+	IsHealthy() bool
+}
+
+type server struct {
+	healths []HealthReporter
+}
+
+func (s server) healthEndpoint(w http.ResponseWriter, r *http.Request) {
+	var content string
+	for _, health := range s.healths {
+		singleHealth := fmt.Sprintln(health, health.IsHealthy())
+		content += singleHealth
+	}
+	w.Write([]byte(content))
 }
