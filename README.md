@@ -4,7 +4,7 @@ This project allows you to monitor health of serivces based on:
 - availabilty of endpoint
 - existence of key in redis
 - file beeing touched in last minute
-- any bash script (where 0 exit code means success)
+- any bash script
   
 One can access healthcheck via HTTP server.
 

@@ -36,12 +36,20 @@ func main() {
 		S:               h.NewRedisBased("some_key"),
 	}
 
+	shellCheck := h.HealthCheck{
+		Name:            "based on cmd",
+		FailedThreshold: 1,
+		PassedThreshold: 1,
+		Interval:        2 * time.Second,
+		S:               h.NewShellBased([]string{"true"}),
+	}
+
 	fileCheck.Run(ctx)
 	apiCheck.Run(ctx)
 	redisCheck.Run(ctx)
+	shellCheck.Run(ctx)
 
 	// TODO implement server to fetch data
-	// TODO implement bash script checks
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
