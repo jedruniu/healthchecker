@@ -2,6 +2,8 @@
 package healthchecker
 
 import (
+	"context"
+	"fmt"
 	"time"
 )
 
@@ -11,39 +13,38 @@ type SingleChecker interface {
 
 type HealthCheck struct {
 	// Unique check name.
-	Name            string
+	Name string
 	// Thresholds define the level of healthy/unhealthy.
 	FailedThreshold int
 	PassedThreshold int
 	// Data polling interval.
-	Interval        time.Duration
+	Interval time.Duration
 	// A target to monitor.
-	S               SingleChecker
+	S SingleChecker
 
-	failedCount     int
-	passedCount     int
-	healthy         bool
-
-
+	failedCount int
+	passedCount int
+	healthy     bool
 }
 
-func (hc HealthCheck) IsHealthy() bool { return hc.healthy }
+func (hc *HealthCheck) IsHealthy() bool { return hc.healthy }
 
-func (hc HealthCheck) Run(ctx context.Context) {
+func (hc *HealthCheck) Run(ctx context.Context) {
 	go func() {
 		for {
 			select {
 			case <-time.After(hc.Interval):
-				hc.runSingleCheck()
+				hc.RunSingleCheck()
 				fmt.Printf("Name: %q\tHealth: %v\n", hc.Name, hc.IsHealthy())
 			case <-ctx.Done():
 				fmt.Printf("Name: %q\tContext terminated", hc.Name)
+				// return
 			}
 		}
 	}()
 }
 
-func (hc HealthCheck) RunSingleCheck() {
+func (hc *HealthCheck) RunSingleCheck() {
 	if sc := hc.S.SingleCheck(); sc {
 		hc.passedCount++
 		hc.failedCount = 0

@@ -13,27 +13,27 @@ func main() {
 	ctx := context.Background()
 
 	fileCheck := h.HealthCheck{
-		Name: "file based one",
+		Name:            "file based one",
 		FailedThreshold: 10,
 		PassedThreshold: 3,
-		Interval: 1*time.Second,
-		S: h.NewFileBased("testFile.txt"),
+		Interval:        1 * time.Second,
+		S:               h.NewFileBased("testFile.txt"),
 	}
 
 	apiCheck := h.HealthCheck{
-		Name: "google endpoint",
+		Name:            "google endpoint",
 		FailedThreshold: 10,
 		PassedThreshold: 3,
-		Interval: 2*time.Second,
-		S: h.NewApiCallBased("http://google.com"),
+		Interval:        2 * time.Second,
+		S:               h.NewApiCallBased("http://google.com"),
 	}
 
 	redisCheck := h.HealthCheck{
-		Name: "get some key from redis",
+		Name:            "get some key from redis",
 		FailedThreshold: 1,
 		PassedThreshold: 1,
-		Interval: 3*time.Second,
-		S: h.NewRedisBased("some_key"),
+		Interval:        3 * time.Second,
+		S:               h.NewRedisBased("some_key"),
 	}
 
 	fileCheck.Run(ctx)
