@@ -21,6 +21,7 @@ func NewRedisBased(key string) SingleChecker {
 }
 
 func (hc *redisBasedHealthCheck) SingleCheck() bool {
+	// TODO distinguish keys does not exist vs redis not available
 	val, err := hc.redisClient.Exists(hc.key).Result()
 	if err != nil {
 		fmt.Printf("could not connect to redis: err %v\n", err)

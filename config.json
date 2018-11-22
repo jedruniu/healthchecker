@@ -1,0 +1,34 @@
+[
+  {
+    "type": "redis_based",
+    "name": "redis one",
+    "failedThreshold": 1,
+    "passedThreshold": 1,
+    "Interval": 1,
+    "target": "some_key"
+  },  
+  {
+    "type": "api_call_based",
+    "name": "endpoint one",
+    "failedThreshold": 1,
+    "passedThreshold": 1,
+    "Interval": 1,
+    "target": "http://google.com"
+  },
+  {
+    "type": "file_based",
+    "name": "check testFile",
+    "failedThreshold": 1,
+    "passedThreshold": 1,
+    "Interval": 1,
+    "target": "testFile.txt"
+  },
+  {
+    "type": "shell_based",
+    "name": "check ls -a",
+    "failedThreshold": 1,
+    "passedThreshold": 1,
+    "Interval": 1,
+    "target": "ls -a"
+  }
+]

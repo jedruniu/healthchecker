@@ -2,79 +2,44 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	"time"
 
-	h "github.com/jedruniu/healthchecker/healthchecker"
+	"github.com/jedruniu/healthchecker/healthchecker"
 )
 
+var port int
+var configPath string
+
+func init() {
+	flag.IntVar(&port, "port", 8080, "server port on which health information will be accessible")
+	flag.StringVar(&configPath, "config", "config.json", "config path")
+}
+
 func main() {
+	flag.Parse()
+
+	cfg, err := healthchecker.ReadConfig(configPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	healthChecks := healthchecker.HealthChecksFromConfig(cfg)
+
 	ctx := context.Background()
-
-	fileCheck := h.HealthCheck{
-		Name:            "file based one",
-		FailedThreshold: 10,
-		PassedThreshold: 3,
-		Interval:        1 * time.Second,
-		S:               h.NewFileBased("testFile.txt"),
+	for _, hc := range healthChecks {
+		hc.Run(ctx)
 	}
 
-	apiCheck := h.HealthCheck{
-		Name:            "google endpoint",
-		FailedThreshold: 10,
-		PassedThreshold: 3,
-		Interval:        2 * time.Second,
-		S:               h.NewApiCallBased("http://google.com"),
-	}
-
-	redisCheck := h.HealthCheck{
-		Name:            "get some key from redis",
-		FailedThreshold: 1,
-		PassedThreshold: 1,
-		Interval:        3 * time.Second,
-		S:               h.NewRedisBased("some_key"),
-	}
-
-	shellCheck := h.HealthCheck{
-		Name:            "based on cmd",
-		FailedThreshold: 1,
-		PassedThreshold: 1,
-		Interval:        2 * time.Second,
-		S:               h.NewShellBased([]string{"true"}),
-	}
-
-	fileCheck.Run(ctx)
-	apiCheck.Run(ctx)
-	redisCheck.Run(ctx)
-	shellCheck.Run(ctx)
-
-	s := server{healths: []HealthReporter{&fileCheck, &apiCheck, &redisCheck, &shellCheck}}
-
-	http.HandleFunc("/health", s.healthEndpoint)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	s := healthchecker.Server{Healths: healthChecks}
+	http.HandleFunc("/health", s.HealthEndpoint)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c
-}
-
-type HealthReporter interface {
-	IsHealthy() bool
-}
-
-type server struct {
-	healths []HealthReporter
-}
-
-func (s server) healthEndpoint(w http.ResponseWriter, r *http.Request) {
-	var content string
-	for _, health := range s.healths {
-		singleHealth := fmt.Sprintln(health, health.IsHealthy())
-		content += singleHealth
-	}
-	w.Write([]byte(content))
 }

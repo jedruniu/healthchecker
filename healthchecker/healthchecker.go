@@ -11,6 +11,10 @@ type SingleChecker interface {
 	SingleCheck() bool
 }
 
+type Runner interface {
+	Run(context.Context)
+}
+
 type HealthCheck struct {
 	// Unique check name.
 	Name string

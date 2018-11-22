@@ -3,14 +3,15 @@ package healthchecker
 import (
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
 type shellBasedHealthCheck struct {
 	cmd []string
 }
 
-func NewShellBased(cmd []string) SingleChecker {
-	return &shellBasedHealthCheck{cmd}
+func NewShellBased(cmd string) SingleChecker {
+	return &shellBasedHealthCheck{strings.Split(cmd, " ")}
 }
 
 func (hc *shellBasedHealthCheck) SingleCheck() bool {
