@@ -1,6 +1,7 @@
 package healthchecker
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -10,10 +11,11 @@ type Server struct {
 }
 
 func (s Server) HealthEndpoint(w http.ResponseWriter, r *http.Request) {
-	var content string
+	report := make(map[string]bool)
 	for _, health := range s.Healths {
-		singleHealth := fmt.Sprintln(health, health.IsHealthy())
-		content += singleHealth
+		report[fmt.Sprint(health)] = health.IsHealthy()
 	}
-	w.Write([]byte(content))
+	// not being able to marshal map seems impossible, skipping error
+	content, _ := json.Marshal(report)
+	w.Write(content)
 }
