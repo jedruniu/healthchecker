@@ -1,4 +1,4 @@
-package healthchecker
+package healthcheck
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 )
 
 type Server struct {
-	Healths []RunReporter
+	Healths []HealthChecker
 }
 
 func (s Server) HealthEndpoint(w http.ResponseWriter, r *http.Request) {

@@ -9,7 +9,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/jedruniu/healthchecker/healthchecker"
+	"github.com/jedruniu/healthcheck/healthcheck"
 )
 
 var port int
@@ -23,19 +23,19 @@ func init() {
 func main() {
 	flag.Parse()
 
-	cfg, err := healthchecker.ReadConfig(configPath)
+	cfg, err := healthcheck.ReadConfig(configPath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	healthChecks := healthchecker.HealthChecksFromConfig(cfg)
+	healthChecks := healthcheck.HealthChecksFromConfig(cfg)
 
 	ctx := context.Background()
 	for _, hc := range healthChecks {
 		hc.Run(ctx)
 	}
 
-	s := healthchecker.Server{Healths: healthChecks}
+	s := healthcheck.Server{Healths: healthChecks}
 	http.HandleFunc("/health", s.HealthEndpoint)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 

@@ -1,4 +1,4 @@
-package healthchecker
+package healthcheck
 
 import (
 	"encoding/json"
@@ -16,20 +16,11 @@ type Config struct {
 	Target          string `json:"target"`
 }
 
-type HealthReporter interface {
-	IsHealthy() bool
-}
-
-type RunReporter interface {
-	HealthReporter
-	Runner
-}
-
-func HealthChecksFromConfig(cfg *[]Config) []RunReporter {
-	var healthChecks []RunReporter
+func HealthChecksFromConfig(cfg *[]Config) []HealthChecker {
+	var healthChecks []HealthChecker
 
 	for _, c := range *cfg {
-		// create common part of Healthchecker
+		// create common part of Healthcheck
 		check := &HealthCheck{
 			Name:            c.Name,
 			FailedThreshold: c.FailedThreshold,

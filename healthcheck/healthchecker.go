@@ -1,5 +1,5 @@
-// healthchecker package provides a funtionality to activelly monitor any target (e.g. file, website).
-package healthchecker
+// healthcheck package provides a funtionality to activelly monitor any target (e.g. file, website).
+package healthcheck
 
 import (
 	"context"
@@ -11,8 +11,9 @@ type SingleChecker interface {
 	SingleCheck() bool
 }
 
-type Runner interface {
+type HealthChecker interface {
 	Run(context.Context)
+	IsHealthy() bool
 }
 
 type HealthCheck struct {

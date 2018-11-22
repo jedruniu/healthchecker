@@ -1,4 +1,4 @@
-### Healthchecker
+### Healthcheck
 
 This project allows you to monitor health of serivces based on:
 - availabilty of endpoint
