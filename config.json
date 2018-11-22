@@ -4,7 +4,7 @@
     "name": "redis one",
     "failedThreshold": 1,
     "passedThreshold": 1,
-    "Interval": 1,
+    "interval": 1,
     "target": "some_key"
   },  
   {
@@ -12,7 +12,7 @@
     "name": "endpoint one",
     "failedThreshold": 1,
     "passedThreshold": 1,
-    "Interval": 1,
+    "interval": 1,
     "target": "http://google.com"
   },
   {
@@ -20,7 +20,7 @@
     "name": "check testFile",
     "failedThreshold": 1,
     "passedThreshold": 1,
-    "Interval": 1,
+    "interval": 1,
     "target": "testFile.txt"
   },
   {
@@ -28,7 +28,7 @@
     "name": "check ls -a",
     "failedThreshold": 1,
     "passedThreshold": 1,
-    "Interval": 1,
+    "interval": 1,
     "target": "ls -a"
   }
 ]
