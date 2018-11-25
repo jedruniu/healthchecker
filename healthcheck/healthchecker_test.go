@@ -34,24 +34,28 @@ func TestHealthChecks(t *testing.T) {
 			failedThreshold:  1,
 			singleCheckCalls: []bool{true, false, true},
 			expectedHealth:   []bool{true, false, true},
+			description:      "thresholds of 1 - react instantaneously with health status",
 		},
 		{
 			passedThreshold:  2,
 			failedThreshold:  1,
 			singleCheckCalls: []bool{true, true},
 			expectedHealth:   []bool{false, true},
+			description:      "passedThreshold of 2 - health detected one cycle later",
 		},
 		{
 			passedThreshold:  2,
 			failedThreshold:  1,
 			singleCheckCalls: []bool{true, false, true, false, true},
 			expectedHealth:   []bool{false, false, false, false, false},
+			description:      "passedThreshold of 2 - flapping input causes to be unhealthy all the time",
 		},
 		{
 			passedThreshold:  2,
 			failedThreshold:  1,
 			singleCheckCalls: []bool{true, true, true, false, true},
 			expectedHealth:   []bool{false, true, true, false, false},
+			description:      " passedThreshold of 2 - detect healthy one cycle later, failedThreshold of 1 - detect unhealthy instantaneously",
 		},
 	}
 	for _, tc := range testCases {
@@ -78,6 +82,8 @@ func TestHealthChecks(t *testing.T) {
 
 		for i := 0; i < len(tc.singleCheckCalls); i++ {
 			c <- time.Time{}
+
+			// Stupid way to avoid race condition in tests
 			time.Sleep(1 * time.Second)
 
 			if hc.IsHealthy() != tc.expectedHealth[i] {
