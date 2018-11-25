@@ -18,7 +18,6 @@ func (mc *MockSingleCheck) SingleCheck() bool {
 		panic(fmt.Sprintf("could not call mock for %d time, it has only %d values", mc.call+1, len(mc.calls)))
 	}
 	value := mc.calls[mc.call]
-	fmt.Println("now yielding: ", value)
 	mc.call++
 	return value
 }
@@ -35,6 +34,24 @@ func TestHealthChecks(t *testing.T) {
 			failedThreshold:  1,
 			singleCheckCalls: []bool{true, false, true},
 			expectedHealth:   []bool{true, false, true},
+		},
+		{
+			passedThreshold:  2,
+			failedThreshold:  1,
+			singleCheckCalls: []bool{true, true},
+			expectedHealth:   []bool{false, true},
+		},
+		{
+			passedThreshold:  2,
+			failedThreshold:  1,
+			singleCheckCalls: []bool{true, false, true, false, true},
+			expectedHealth:   []bool{false, false, false, false, false},
+		},
+		{
+			passedThreshold:  2,
+			failedThreshold:  1,
+			singleCheckCalls: []bool{true, true, true, false, true},
+			expectedHealth:   []bool{false, true, true, false, false},
 		},
 	}
 	for _, tc := range testCases {
