@@ -4,8 +4,12 @@ package healthcheck
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 )
+
+// for testing purposes
+var after = time.After
 
 type SingleChecker interface {
 	SingleCheck() bool
@@ -27,6 +31,9 @@ type HealthCheck struct {
 	// A target to monitor.
 	S SingleChecker
 
+	// Where to log output
+	LogOutput io.Writer
+
 	failedCount int
 	passedCount int
 	healthy     bool
@@ -36,11 +43,11 @@ func (hc *HealthCheck) Run(ctx context.Context) {
 	go func() {
 		for {
 			select {
-			case <-time.After(hc.Interval):
+			case <-after(hc.Interval):
 				hc.runSingleCheck()
-				fmt.Printf("Name: %q\t Health: %v\n", hc.Name, hc.IsHealthy())
+				fmt.Fprintf(hc.LogOutput, "Name: %q\t Health: %v\n", hc.Name, hc.IsHealthy())
 			case <-ctx.Done():
-				fmt.Printf("Name: %q\t Context terminated\n", hc.Name)
+				fmt.Fprintf(hc.LogOutput, "Name: %q\t Context terminated\n", hc.Name)
 				return
 			}
 		}

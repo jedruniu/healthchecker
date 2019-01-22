@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"time"
 )
 
@@ -26,6 +27,7 @@ func HealthChecksFromConfig(cfg *[]Config) []HealthChecker {
 			FailedThreshold: c.FailedThreshold,
 			PassedThreshold: c.PassedThreshold,
 			Interval:        time.Duration(c.Interval) * time.Second,
+			LogOutput:       os.Stdout,
 		}
 
 		// dispatch SingleChecker dynamically by key in config
